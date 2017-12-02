@@ -14,7 +14,6 @@ def index(request):
 
 def dashboard(request):
     current_user = request.user
-
     context = {'courses_enrolled':[], 'first_name': current_user.first_name,
                'last_name': current_user.last_name, 'email': current_user.email,
                'meeting_enrolled':[]}

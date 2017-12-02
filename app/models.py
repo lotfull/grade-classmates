@@ -1,8 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-
-
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
@@ -95,3 +93,37 @@ class GradeAction(models.Model):
     def __str__(self):
         return 'grading {}; graded {}; grade {}; merit {}; meeting {}'.format(
             self.grading, self.graded, self.grade, self.merit, self.meeting)
+
+class DataManager(models.Manager):
+
+    users_names = ["Fadeev", "Terentyev", "Kozlov", "Kuzmin", "Fedorov", "Shcherbakov", "Dmitriev", "Yudin", "Belousova", "Gerasimov", "Seleznyov", "Prokhorov", "Bobrov", "Birds", "Crane", "Zuyev", "Karpov", "Vladimir", "Kolobov", "Nesterov", "Kondratyev", "Petrov", "Sparrows", "Maksimov", "Isayev", "Frolov", "Shchukin", "Alexander", "Tretyakov", "Vorontsov", "Kosheleva", "Efimova", "Lobanov", "Sorokin", "Belousova", "Boer", "Seleznyov", "Sukhanov", "Morozov", "Doronin", "Vorob", "Makarov", "Nesterov", "Sokolov", "Beetles", "Nekrasov", "Gavrilov", "Wings", "Simonov", "Myasnikova", "Cossacks", "Sparrows", "Kovalev", "Ermakova", "Larionov", "Vorob", "Sokolov", "Mironov", "Davidoff", "Loginova", "Zhdanov", "Bobylev", "Subbotina", "Dorofeev", "Popova", "Voronova", "Index", "Guryev", "Karpov", "Zhdanov", "Orlov", "Kulikova", "Sharova", "Ignatova", "Myasnikov", "Boar", "Panov", "Mammoth", "O", "Bykov", "Panova", "Belousova", "Gushchin", "Koshelev", "Krasilnikov", "Fomin", "Danilov", "Savel", "Pancakes", "Vlasov", "Mikhaylov", "Smith", "Pavlov", "Ponomareva", "Nesterov", "Mikheev", "Frolov", "Konovalov", "Kirillov", "Kolesnikov"]
+
+    @staticmethod
+    def generate_data():
+        for i, name in enumerate(DataManager.users_names):
+            user, created = User.objects.get_or_create(
+                username=name, email=name+'@edu.hse.ru')
+            if created:
+                user.set_password(name)
+                user.save()
+                if (i % 20 == 0):
+                    User_Role = Teacher
+                else:
+                    User_Role = Student
+                user_role = User_Role()
+                user_role.user = user
+                user_role.save()
+
+    @staticmethod
+    def findFreeUsers():
+        for user in User.objects.all():
+            is_student = False
+            for student in Student.objects.all():
+                if student.user == user:
+                    is_student = True
+                    print(student, user.email, "is student")
+                    break
+                for teacher in Teacher.objects.all():
+                    if teacher.user == user:
+                        print(teacher, user.email, "is teacher")
+                        break
