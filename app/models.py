@@ -12,14 +12,14 @@ class Teacher(models.Model):
 
 class Course(models.Model):
     name = models.CharField(max_length=50)
-    description = models.CharField(max_length=50)
-    start_date = models.DateField()
-    end_date = models.DateField()
+    description = models.CharField(max_length=50, null=True)
+    start_date = models.DateField(null=True)
+    end_date = models.DateField(null=True)
 
 
 class Merit(models.Model):
     name = models.CharField(max_length=45)
-    description = models.CharField(max_length=50)
+    description = models.CharField(max_length=50, null=True)
 
 
 class MeetingType(models.Model):
@@ -28,9 +28,9 @@ class MeetingType(models.Model):
 
 class Meeting(models.Model):
     date = models.DateField()
-    place = models.CharField(max_length=50)
-    course = models.ForeignKey(Course, on_delete=models.SET_NULL)
-    meeting_type = models.ForeignKey(MeetingType, on_delete=models.SET_NULL)
+    place = models.CharField(max_length=50, null=True)
+    course = models.ForeignKey(Course, on_delete=models.SET_NULL, null=True)
+    meeting_type = models.ForeignKey(MeetingType, on_delete=models.SET_NULL, null=True)
 
 
 class TeacheTeaches(models.Model):
@@ -54,8 +54,8 @@ class StudentAttends(models.Model):
 
 
 class GradeAction(models.Model):
-    grading = models.ForeignKey(User, on_delete=models.CASCADE)
-    graded = models.ForeignKey(User, on_delete=models.CASCADE)
+    grading = models.ForeignKey(User, on_delete=models.CASCADE, related_name='who_grading')
+    graded = models.ForeignKey(User, on_delete=models.CASCADE, related_name='who_graded')
     grade = models.IntegerField()
-    merit = models.ForeignKey(Merit, on_delete=models.SET_NULL)
-    meeting = models.ForeignKey(Meeting, on_delete=models.SET_NULL)
+    merit = models.ForeignKey(Merit, on_delete=models.SET_NULL, null=True)
+    meeting = models.ForeignKey(Meeting, on_delete=models.SET_NULL, null=True)
