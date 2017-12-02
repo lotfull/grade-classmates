@@ -1,0 +1,14 @@
+<html>
+    <head>
+
+    </head>
+
+    <body>
+        First name: {{ first_name }} <br />
+        Last name: {{last_name}} <br / />
+        Courses enrolled: <br />
+        {% for course in courses_enrolled %}
+            <li>{{course}}</li>
+        {% endfor %}
+    </body>
+</html>
