@@ -9,16 +9,22 @@
 
     <style>
         .no_grade {
-            background-color: #C2C2C2;
+            background-color: #F9F9F9;
         }
 
         .bad_grade {
-            background-color: #B42D2D;
+            background-color: rgb(230, 0, 0);
         }
 
         .good_grade {
             background-color: #45BF3B;
         }
+        table, th, td {
+            font-size: 14;
+            border: 0.5px solid gray;
+        }
+
+
     </style>
 
 </head>
@@ -34,11 +40,11 @@
                 <tr>
                     {% for grade in grade_line %}
                         {%if grade == None %}
-                            <th class="no_grade"> {{ grade }} </th>
+                            <td class="no_grade text-center"> {{ "–" }} </td>
                         {%elif grade <= 5%}
-                            <th class="bad_grade"> {{ grade }} </th>
+                            <td class="bad_grade text-center"> {{ grade }} </td>
                         {%elif grade > 5%}
-                            <th class="good_grade"> {{ grade }} </th>
+                            <td class="good_grade text-center"> {{ grade }} </td>
                         {% else %}
                             <th> {{ grade }} </th>
                         {% endif %}

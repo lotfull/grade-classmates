@@ -206,7 +206,7 @@ class DataManager(models.Manager):
 
     meeting_types_descriptions = ["lecture", "seminar"]
 
-    merit_names_descriptions = [("communication skills", "+"), ("diligence", "+"), ("intellect", "+"), ("open-minded", "+"), ("responsibility", "+"), ("overall", "+")]
+    merit_names_descriptions = [("communication skills", "+"), ("ability to admit a mistake", "+"), ("intellect", "+"), ("open-minded", "+"), ("responsibility", "+"), ("overall", "+")]
 
     places = ["kochna, 610", "kochna, 229", "kochna, 330", "kochna, 203", "kochna, 408", "kochna, 306", "kochna, 505", "kochna, 432", "kochna, 521", "kochna, 200", "kochna, 223", "kochna, 607", "kochna, 319", "kochna, 211", "kochna, 221", "kochna, 404", "kochna, 413", "kochna, 317", "kochna, 234", "kochna, 504"]
 
@@ -279,7 +279,7 @@ class DataManager(models.Manager):
 
     @staticmethod
     def generate_studentEnrolled_teacherTeaches():
-        students = Student.objects.all()
+        students = list(Student.objects.all())
         teachers = Teacher.objects.all()
         courses = Course.objects.all()
         for course in courses:
@@ -333,35 +333,29 @@ class DataManager(models.Manager):
     def generate_grade_actions(meetings=Meeting.objects.all(),
                                courses=Course.objects.all(),
                                merits=Merit.objects.all(),
-                               grading_proportion=1./5):
+                               grading_proportion=1./3):
 
         merits_without_overall = list(filter((lambda x: x.name != "overall"), merits))
         overall_merit = list(filter((lambda x: x.name=="overall"), merits))[0]
-
         for meeting in meetings:
             studentsAttends = StudentAttends.objects.filter(meeting=meeting)
             teachersAttends = TeacherAttends.objects.filter(meeting=meeting)
-
             users = list(map((lambda x: x.student.user), studentsAttends))
             users += list(map((lambda x: x.teacher.user), teachersAttends))
-
             sample_size = int(len(users)*grading_proportion)
-
             grading_users = random.sample(users, sample_size)
-            graded_users = random.sample(users, sample_size)
-
             for grading_user in grading_users:
+                graded_users = random.sample(users, sample_size)
                 for graded_user in graded_users:
-
+                    if grading_user == graded_user:
+                        continue
                     merits_number = random.randint(1, len(merits_without_overall))
                     merits_sample = random.sample(merits_without_overall, merits_number)
                     overall_grade = 0
-
                     for merit in merits_sample:
                         grade = random.randint(1, 10)
                         overall_grade += grade
                         GradeAction.create(grading_user, graded_user, grade, merit, meeting)
-
                     overall_grade /= merits_number
                     GradeAction.create(grading_user, graded_user, overall_grade, overall_merit, meeting)
 
