@@ -60,6 +60,18 @@ class TeacherTeaches(models.Model):
     def __str__(self):
         return '{} - {}'.format(self.teacher, self.course)
 
+    @staticmethod
+    def create(course, teacher):
+        teacherTeaches, created = TeacherTeaches.objects.get_or_create(
+                course = course,
+                teacher = teacher
+            )
+        if created:
+            print("created", teacherTeaches)
+        else:
+            print("existing", teacherTeaches)
+        teacherTeaches.save()
+
 
 class StudentEnrolled(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
@@ -67,6 +79,18 @@ class StudentEnrolled(models.Model):
 
     def __str__(self):
         return '{} - {}'.format(self.student, self.course)
+
+    @staticmethod
+    def create(course, student):
+        studentEnrolled, created = StudentEnrolled.objects.get_or_create(
+                course = course,
+                student = student
+            )
+        if created:
+            print("created", studentEnrolled)
+        else:
+            print("existing", studentEnrolled)
+        studentEnrolled.save()
 
 
 class TeacherAttends(models.Model):
@@ -142,7 +166,8 @@ class DataManager(models.Manager):
                 continue
             print(user, "is NOBODY")
             nobody_n += 1
-        print("stud_n = {}, teach_num = {}, nobody_n = {}".format(stud_n, teach_num, nobody_n))
+        print("stud_n = {}, teach_num = {}, nobody_n = {}"
+              .format(stud_n, teach_num, nobody_n))
 
     @staticmethod
     def generate_courses():
@@ -154,7 +179,8 @@ class DataManager(models.Manager):
         for i, course_name in enumerate(few_courses_names):
             course, created = Course.objects.get_or_create(
                 name=course_name,
-                description="The course of {} give student basic skills in {}".format(course_name, course_name),
+                description="The course of {} give student basic skills in {}"
+                    .format(course_name, course_name),
                 start_date=start_date,
                 end_date=end_date,
             )
@@ -164,3 +190,15 @@ class DataManager(models.Manager):
                 print("existing", course)
             course.save()
 
+    @staticmethod
+    def connect_students_teachers_to_courses():
+        students = Student.objects.all()
+        teachers = Teacher.objects.all()
+        courses = Course.objects.all()
+        for course in courses:
+            num_students_per_course = random.randint(15, 30)
+            few_students = random.sample(students, num_students_per_course)
+            teacher = random.choice(teachers)
+            for student in few_students:
+                StudentEnrolled.create(course, student)
+            TeacherTeaches.create(course, teacher)
