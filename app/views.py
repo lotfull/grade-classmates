@@ -100,26 +100,48 @@ def meeting_results(request, meeting_id):
     return render(request, 'app/vote_results_for_participant.html', context)
 
 
-# def meeting_vote(request, meeting_id):
+from django.contrib.auth.models import User
+from .models import Merit
 
+
+def meeting_vote_choice(request, meeting_id, graded_id):
+    current_user = request.user
+    meeting = get_object_or_404(Meeting, pk=meeting_id)
+    graded = get_object_or_404(User, pk=graded_id)  # TODO Check that graded is from meeting_id
+    merits = Merit.objects.all()
+    merits_names_positive = list(map(lambda merit: merit.name, list(filter(lambda merit: merit.description == '+', merits))))
+    merits_names_negative = list(map(lambda merit: merit.name, list(filter(lambda merit: merit.description == '-', merits))))
+
+    context = {
+        'meeting': meeting,
+        'grading': current_user,
+        'graded': graded,
+        'merits_positive': merits_names_positive,
+        'merits_negative': merits_names_negative
+    }
+    return render(request, 'app/vote_choice.html', context)  # TODO Nikita
+
+
+# def meeting_vote_action(request, meeting_id, ):
+#     pass
 #
-#     current_user = request.user
-#     current_meeting = models.Meeting.objects.get(pk=meeting_id)
 #
-#     current_grades = models.GradeAction.objects.filter(meeting=current_meeting)
-#     current_grades = models.GradeAction.objects.filter(meeting=meeting_id)
-#
-#     current_participants = models.Meeting.objects.filter(meeting_id)
-#
-#     header = "You're LOOKING on meeting {}".format(meeting_id)
-#     participants = mode
-#     return HttpResponse("You're LOOKING on meeting {}".format(meeting_id))
-#
-#     # context = {
-#     #     'meeting': current_meeting,
-#     #     'participants': current_participants_names,
-#     #     'grades': table_of_grades
-#     # }
-#     # return render(request, 'app/meeting_results.html', context)
+# def vote(request, question_id):
+#     question = get_object_or_404(Question, pk=question_id)
+#     try:
+#         selected_choice = question.choice_set.get(pk=request.POST['choice'])
+#     except (KeyError, Choice.DoesNotExist):
+#         # Redisplay the question voting form.
+#         return render(request, 'polls/detail.html', {
+#             'question': question,
+#             'error_message': "You didn't select a choice.",
+#         })
+#     else:
+#         selected_choice.votes += 1
+#         selected_choice.save()
+#         # Always return an HttpResponseRedirect after successfully dealing
+#         # with POST data. This prevents data from being posted twice if a
+#         # user hits the Back button.
+#         return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
 
 
