@@ -115,15 +115,27 @@ class DataManager(models.Manager):
                 user_role.save()
 
     @staticmethod
-    def findFreeUsers():
+    def print_all_users_roles():
+        stud_n, teach_num, nobody_n = 0, 0, 0
         for user in User.objects.all():
-            is_student = False
+            user_is_student = False
             for student in Student.objects.all():
                 if student.user == user:
-                    is_student = True
-                    print(student, user.email, "is student")
+                    print(user, "is student")
+                    user_is_student = True
                     break
-                for teacher in Teacher.objects.all():
-                    if teacher.user == user:
-                        print(teacher, user.email, "is teacher")
-                        break
+            if user_is_student:
+                stud_n += 1
+                continue
+            user_is_teacher = False
+            for teacher in Teacher.objects.all():
+                if teacher.user == user:
+                    print(user, "is teacher")
+                    user_is_teacher = True
+                    break
+            if user_is_teacher:
+                teach_num += 1
+                continue
+            print(user, "is NOBODY")
+            nobody_n += 1
+        print("stud_n = {}, teach_num = {}, nobody_n = {}".format(stud_n, teach_num, nobody_n))
