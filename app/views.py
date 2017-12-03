@@ -122,26 +122,42 @@ def meeting_vote_choice(request, meeting_id, graded_id):
     return render(request, 'app/vote_choice.html', context)  # TODO Nikita
 
 
-# def meeting_vote_action(request, meeting_id, ):
-#     pass
-#
-#
-# def vote(request, question_id):
-#     question = get_object_or_404(Question, pk=question_id)
-#     try:
-#         selected_choice = question.choice_set.get(pk=request.POST['choice'])
-#     except (KeyError, Choice.DoesNotExist):
-#         # Redisplay the question voting form.
-#         return render(request, 'polls/detail.html', {
-#             'question': question,
-#             'error_message': "You didn't select a choice.",
-#         })
-#     else:
-#         selected_choice.votes += 1
-#         selected_choice.save()
-#         # Always return an HttpResponseRedirect after successfully dealing
-#         # with POST data. This prevents data from being posted twice if a
-#         # user hits the Back button.
-#         return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
+from django.http import HttpResponseRedirect, HttpResponse
+from django.urls import reverse
 
-
+def meeting_vote_action(request, meeting_id, graded_id):
+    current_user = request.user
+    meeting = get_object_or_404(Meeting, pk=meeting_id)
+    graded = get_object_or_404(User, pk=graded_id)
+    try:
+        grade = request.POST['grade']
+        del request.POST['grade']
+        merits_ids = request.POST.keys()
+    except KeyError:
+        merits = Merit.objects.all()
+        merits_names_positive = list(
+            map(lambda merit: merit.name,
+                list(filter(lambda merit: merit.description == '+', merits))))
+        merits_names_negative = list(
+            map(lambda merit: merit.name,
+                list(filter(lambda merit: merit.description == '-', merits))))
+        context = {
+            'meeting': meeting,
+            'grading': current_user,
+            'graded': graded,
+            'merits_positive': merits_names_positive,
+            'merits_negative': merits_names_negative
+        }
+        return render(request, 'app/vote_choice.html', context)
+    else:
+        for merit_id in merits_ids:
+            merit = Merit.objects.get(pk=merit_id)
+            grade_action, created = GradeAction.objects.get_or_create(
+                grading=current_user,
+                graded=graded,
+                grade=grade,
+                merit=merit,
+                meeting=meeting
+            )
+            grade_action.save()
+        return HttpResponseRedirect(reverse('meetings_results', args=(meeting_id,)))

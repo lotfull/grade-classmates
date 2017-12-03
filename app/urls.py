@@ -9,5 +9,5 @@ urlpatterns = [
 
     url(r'^meeting/(?P<meeting_id>[0-9]+)/results/$', views.meeting_results, name='meeting_results'),
     url(r'^meeting/(?P<meeting_id>[0-9]+)/vote_choice/(?P<graded_id>[0-9]+)/$', views.meeting_vote_choice, name='meeting_vote_choice'),
-    # url(r'^meeting/(?P<meeting_id>[0-9]+)/vote_action/(?P<graded_id>[0-9]+)$', views.meeting_vote_action, name='meeting_vote_action'),
+    url(r'^meeting/(?P<meeting_id>[0-9]+)/vote_action/(?P<graded_id>[0-9]+)$', views.meeting_vote_action, name='meeting_vote_action'),
 ]
