@@ -321,7 +321,7 @@
                     <tbody class="scrollit">
                         {% for meeting in meeting_enrolled %}
                             <tr>
-                                <td>{{ meeting.course }}</td>
+                                <td href="{% url app:meeting_results meeting.id %}">{{ meeting.course }}</td>
                                 <td>{{ meeting.meeting_type }}</td>
                                 <td>{{ meeting.date }}</td>
                                 <td>{{ meeting.place }}</td>
