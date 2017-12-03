@@ -57,3 +57,65 @@ def dashboard(request):
         print(i[0], i[1])
 
     return render(request, 'app/dashboard.html', context)
+
+
+from .models import Meeting, GradeAction, TeacherAttends, StudentAttends
+from django.shortcuts import get_object_or_404
+
+
+def meeting_results(request, meeting_id):
+    current_user = request.user
+    meeting = get_object_or_404(Meeting, pk=meeting_id)
+
+    teachers = TeacherAttends.objects.filter(meeting_id=meeting_id)  # TODO unique
+    students =  StudentAttends.objects.filter(meeting_id=meeting_id)
+    teachers_names = [teacher.teacher.user.username for teacher in teachers]
+    students_names = [student.student.user.username for student in students]
+    participants_names = teachers_names + students_names
+
+    grades = GradeAction.objects.filter(meeting_id=meeting_id)
+    mapping_from_username_to_index = {username: index
+                                     for index, username in enumerate(participants_names)}
+
+    table_of_grades = [[None] * len(participants_names) for _ in range(len(participants_names))]
+    indexes = []
+    for grade in grades:
+        try:
+            index_grading = mapping_from_username_to_index[grade.grading.username]
+            index_graded = mapping_from_username_to_index[grade.graded.username]
+            table_of_grades[index_grading][index_graded] = grade.grade
+        except (IndexError, KeyError) as e:
+            pass
+            # TODO grade action from where grading or graded is not in meeting
+
+    context = {
+        'meeting': meeting,
+        'participants': participants_names,
+        'grades': table_of_grades
+    }
+    return render(request, 'app/meeting_results.html', context)
+
+
+# def meeting_vote(request, meeting_id):
+
+#
+#     current_user = request.user
+#     current_meeting = models.Meeting.objects.get(pk=meeting_id)
+#
+#     current_grades = models.GradeAction.objects.filter(meeting=current_meeting)
+#     current_grades = models.GradeAction.objects.filter(meeting=meeting_id)
+#
+#     current_participants = models.Meeting.objects.filter(meeting_id)
+#
+#     header = "You're LOOKING on meeting {}".format(meeting_id)
+#     participants = mode
+#     return HttpResponse("You're LOOKING on meeting {}".format(meeting_id))
+#
+#     # context = {
+#     #     'meeting': current_meeting,
+#     #     'participants': current_participants_names,
+#     #     'grades': table_of_grades
+#     # }
+#     # return render(request, 'app/meeting_results.html', context)
+
+
