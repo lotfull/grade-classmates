@@ -77,27 +77,23 @@ def meeting_results(request, meeting_id):
     mapping_from_username_to_index = {username: index
                                      for index, username in enumerate(participants_names)}
 
-    table_of_grades = [[None] * (len(participants_names) + 1) for _ in range(len(participants_names) + 1)]
+    table_of_grades = [[None] * len(participants_names) for _ in range(len(participants_names))]
+    indexes = []
     for grade in grades:
         try:
             index_grading = mapping_from_username_to_index[grade.grading.username]
             index_graded = mapping_from_username_to_index[grade.graded.username]
-            table_of_grades[index_grading + 1][index_graded + 1] = grade.grade
+            table_of_grades[index_grading][index_graded] = grade.grade
         except (IndexError, KeyError) as e:
             pass
             # TODO grade action from where grading or graded is not in meeting
 
-    table_of_grades[0][0] = ""
-    for i in range(len(participants_names)):
-        table_of_grades[0][i + 1] = participants_names[i]
-        table_of_grades[i + 1][0] = participants_names[i]
-
     context = {
         'meeting': meeting,
-        'grades': table_of_grades,
+        'participants': participants_names,
+        'grades': table_of_grades
     }
-    print(context)
-    return render(request, 'app/vote_results_for_participant.html', context)
+    return render(request, 'app/meeting_results.html', context)
 
 
 # def meeting_vote(request, meeting_id):
