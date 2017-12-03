@@ -96,7 +96,6 @@ def meeting_results(request, meeting_id):
         'meeting': meeting,
         'grades': table_of_grades,
     }
-    print(context)
     return render(request, 'app/vote_results_for_participant.html', context)
 
 
@@ -109,17 +108,14 @@ def meeting_vote_choice(request, meeting_id, graded_id):
     meeting = get_object_or_404(Meeting, pk=meeting_id)
     graded = get_object_or_404(User, pk=graded_id)  # TODO Check that graded is from meeting_id
     merits = Merit.objects.all()
-    merits_names_positive = list(map(lambda merit: merit.name, list(filter(lambda merit: merit.description == '+', merits))))
-    merits_names_negative = list(map(lambda merit: merit.name, list(filter(lambda merit: merit.description == '-', merits))))
 
     context = {
         'meeting': meeting,
         'grading': current_user,
         'graded': graded,
-        'merits_positive': merits_names_positive,
-        'merits_negative': merits_names_negative
+        'merits': merits,
     }
-    return render(request, 'app/vote_choice.html', context)  # TODO Nikita
+    return render(request, 'app/voting.html', context)  # TODO Nikita
 
 
 from django.http import HttpResponseRedirect, HttpResponse
@@ -130,9 +126,11 @@ def meeting_vote_action(request, meeting_id, graded_id):
     meeting = get_object_or_404(Meeting, pk=meeting_id)
     graded = get_object_or_404(User, pk=graded_id)
     try:
-        grade = request.POST['grade']
-        del request.POST['grade']
-        merits_ids = request.POST.keys()
+        grade = request.POST['overall_grade']
+        print(grade)
+        merits_ids = list(request.POST.keys())
+        merits_ids.remove('overall_grade')
+        merits_ids.remove('csrfmiddlewaretoken')
     except KeyError:
         merits = Merit.objects.all()
         merits_names_positive = list(
@@ -148,7 +146,7 @@ def meeting_vote_action(request, meeting_id, graded_id):
             'merits_positive': merits_names_positive,
             'merits_negative': merits_names_negative
         }
-        return render(request, 'app/vote_choice.html', context)
+        return render(request, 'app/voting.html', context)
     else:
         for merit_id in merits_ids:
             merit = Merit.objects.get(pk=merit_id)
@@ -160,4 +158,4 @@ def meeting_vote_action(request, meeting_id, graded_id):
                 meeting=meeting
             )
             grade_action.save()
-        return HttpResponseRedirect(reverse('meetings_results', args=(meeting_id,)))
+        return HttpResponseRedirect(reverse('app:meeting_results', args=(meeting_id,)))

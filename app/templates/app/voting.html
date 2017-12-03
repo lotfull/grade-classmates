@@ -75,38 +75,39 @@
         <h3> {{ graded }} graded by {{ grading }} </h3>
     </div>
 
-    <form action="{% url app:meeting_vote_action meeting.id graded.id%}" method="POST">
+    <form action="{% url 'app:meeting_vote_action' meeting.id graded.id%}" method="POST">
+        {% csrf_token %}
         <div class="container">
         <div class="raw">
                 <div class="col-md-1 voter" style="background-color:#F50003;">
                     <input type="radio" name="overall_grade" value="1"> 1
                 </div>
                 <div class="col-md-1 voter" style="background-color:#EF1F21">
-                    <input type="radio" name="overall_grade" value="1"> 2
+                    <input type="radio" name="overall_grade" value="2"> 2
                 </div>
                 <div class="col-md-1 voter" style="background-color:#E84A4C">
-                    <input type="radio" name="overall_grade" value="1"> 3
+                    <input type="radio" name="overall_grade" value="3"> 3
                 </div>
                 <div class="col-md-1 voter" style="background-color:#E79293">
-                    <input type="radio" name="overall_grade" value="1"> 4
+                    <input type="radio" name="overall_grade" value="4"> 4
                 </div>
                 <div class="col-md-1 voter" style="background-color:#FFFFFF">
-                    <input type="radio" name="overall_grade" value="1" checked> 5
+                    <input type="radio" name="overall_grade" value="5" checked> 5
                 </div>
                 <div class="col-md-1 voter" style="background-color:#C6DFC3">
-                    <input type="radio" name="overall_grade" value="1"> 6
+                    <input type="radio" name="overall_grade" value="6"> 6
                 </div>
                 <div class="col-md-1 voter" style="background-color:#A6D4A0">
-                    <input type="radio" name="overall_grade" value="1"> 7
+                    <input type="radio" name="overall_grade" value="7"> 7
                 </div>
                 <div class="col-md-1 voter" style="background-color:#81D076">
-                    <input type="radio" name="overall_grade" value="1"> 8
+                    <input type="radio" name="overall_grade" value="8"> 8
                 </div>
                 <div class="col-md-1 voter" style="background-color:#51CF3F">
-                    <input type="radio" name="overall_grade" value="1"> 9
+                    <input type="radio" name="overall_grade" value="9"> 9
                 </div>
                 <div class="col-md-1 voter" style="background-color:#28C412">
-                    <input type="radio" name="overall_grade" value="1"> 10
+                    <input type="radio" name="overall_grade" value="10"> 10
                 </div>
                 <div class="col-md-2"></div>
         </div>
@@ -114,46 +115,11 @@
 
         <br />
 
-        <div class="container">
-            <div class="raw">
-                <div class="col-md-2">
-                    <h4> <b> Positive qualities</b> </h4>
-                </div>
-
-                <div class="col-md-2">
-                    <form action="#" method="get">
-                        <div class="input-group">
-                            <!-- USE TWITTER TYPEAHEAD JSON WITH API TO SEARCH -->
-                            <input class="form-control" id="system-search" name="q" placeholder="Search for" required>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="col-md-8"></div>
-            </div>
-            <br /><br />
-            <div class="raw">
-                <div class="col-md-4" style="overflow-y:scroll; height: 200pt;">
-            	 <table class="table table-list-search table-responsive">
-                            <thead>
-                                <tr>
-                                    <th>Merit</th>
-                                </tr>
-                            </thead>
-                            <tbody class="scrollit">
-                                {% for merit in merits %}
-                                    <tr>
-                                        <td> <input type="checkbox" name="{{merit.id}}"> {{ merit.name }}</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-        		</div>
-                <div class="col-md-8"></div>
-            </div>
-
+        <div class="containter" style="padding-left:180px; padding-bottom: 40px">
+            {% for merit in merits %}
+                <input type="checkbox" name="{{ merit.id }}" value='1'> {{ merit.name }}<br />
+            {% endfor %}
         </div>
-
         <div class="container">
             <input type="submit">
         </div>
