@@ -1,0 +1,53 @@
+<html>
+<head>
+    <title>Vote results</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <style>
+        .no_grade {
+            background-color: #C2C2C2;
+        }
+
+        .bad_grade {
+            background-color: #B42D2D;
+        }
+
+        .good_grade {
+            background-color: #45BF3B;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container">
+        <h1>{{ meeting.meeting_type }} in {{ meeting.course }} in {{ meeting.place }} on {{ meeting.date }}</h1>
+    </div>
+
+    <div class="container">
+        <table class="table">
+            {% for grade_line in grades %}
+                <tr>
+                    {% for grade in grade_line %}
+                        {%if grade == None %}
+                            <th class="no_grade"> {{ grade }} </th>
+                        {%elif grade <= 5%}
+                            <th class="bad_grade"> {{ grade }} </th>
+                        {%elif grade > 5%}
+                            <th class="good_grade"> {{ grade }} </th>
+                        {% else %}
+                            <th> {{ grade }} </th>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</body>
+
+</html>
