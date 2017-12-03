@@ -8,54 +8,201 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script>
-      $(document).ready(function() {
-        var activeSystemClass = $('.list-group-item.active');
+              $(document).ready(function() {
+                var activeSystemClass = $('.list-group-item.active');
 
-        //something is entered in search form
-        $('#system-search').keyup( function() {
-           var that = this;
-            // affect all table rows on in systems table
-            var tableBody = $('.table-list-search tbody');
-            var tableRowsClass = $('.table-list-search tbody tr');
-            $('.search-sf').remove();
-            tableRowsClass.each( function(i, val) {
-
-                //Lower text for case insensitive
-                var rowText = $(val).text().toLowerCase();
-                var inputText = $(that).val().toLowerCase();
-                if(inputText != '')
-                {
-                    $('.search-query-sf').remove();
-                    tableBody.prepend('<tr class="search-query-sf"><td colspan="6"><strong>Searching for: "'
-                        + $(that).val()
-                        + '"</strong></td></tr>');
-                }
-                else
-                {
-                    $('.search-query-sf').remove();
-                }
-
-                if( rowText.indexOf( inputText ) == -1 )
-                {
-                    //hide rows
-                    tableRowsClass.eq(i).hide();
-
-                }
-                else
-                {
+                //something is entered in search form
+                $('#system-search').keyup( function() {
+                   var that = this;
+                    // affect all table rows on in systems table
+                    var tableBody = $('.table-list-search tbody');
+                    var tableRowsClass = $('.table-list-search tbody tr');
                     $('.search-sf').remove();
-                    tableRowsClass.eq(i).show();
+                    tableRowsClass.each( function(i, val) {
+
+                        //Lower text for case insensitive
+                        var rowText = $(val).text().toLowerCase();
+                        var inputText = $(that).val().toLowerCase();
+                        if(inputText != '')
+                        {
+                            $('.search-query-sf').remove();
+                            tableBody.prepend('<tr class="search-query-sf"><td colspan="6"><strong>Searching for: "'
+                                + $(that).val()
+                                + '"</strong></td></tr>');
+                        }
+                        else
+                        {
+                            $('.search-query-sf').remove();
+                        }
+
+                        if( rowText.indexOf( inputText ) == -1 )
+                        {
+                            //hide rows
+                            tableRowsClass.eq(i).hide();
+
+                        }
+                        else
+                        {
+                            $('.search-sf').remove();
+                            tableRowsClass.eq(i).show();
+                        }
+                    });
+                    //all tr elements are hidden
+                    if(tableRowsClass.children(':visible').length == 0)
+                    {
+                        tableBody.append('<tr class="search-sf"><td class="text-muted" colspan="6">No entries found.</td></tr>');
+                    }
+                });
+            });
+
+            $(document).ready(function() {
+              var activeSystemClass = $('.list-group-item.active');
+
+              //something is entered in search form
+              $('#system-search1').keyup( function() {
+                 var that = this;
+                  // affect all table rows on in systems table
+                  var tableBody = $('.table-list-search1 tbody');
+                  var tableRowsClass = $('.table-list-search1 tbody tr');
+                  $('.search-sf').remove();
+                  tableRowsClass.each( function(i, val) {
+
+                      //Lower text for case insensitive
+                      var rowText = $(val).text().toLowerCase();
+                      var inputText = $(that).val().toLowerCase();
+                      if(inputText != '')
+                      {
+                          $('.search-query-sf').remove();
+                          tableBody.prepend('<tr class="search-query-sf"><td colspan="6"><strong>Searching for: "'
+                              + $(that).val()
+                              + '"</strong></td></tr>');
+                      }
+                      else
+                      {
+                          $('.search-query-sf').remove();
+                      }
+
+                      if( rowText.indexOf( inputText ) == -1 )
+                      {
+                          //hide rows
+                          tableRowsClass.eq(i).hide();
+
+                      }
+                      else
+                      {
+                          $('.search-sf').remove();
+                          tableRowsClass.eq(i).show();
+                      }
+                  });
+                  //all tr elements are hidden
+                  if(tableRowsClass.children(':visible').length == 0)
+                  {
+                      tableBody.append('<tr class="search-sf"><td class="text-muted" colspan="6">No entries found.</td></tr>');
+                  }
+              });
+          });
+
+          $(document).ready(function() {
+            var activeSystemClass = $('.list-group-item.active');
+
+            //something is entered in search form
+            $('#system-search2').keyup( function() {
+               var that = this;
+                // affect all table rows on in systems table
+                var tableBody = $('.table-list-search2 tbody');
+                var tableRowsClass = $('.table-list-search2 tbody tr');
+                $('.search-sf').remove();
+                tableRowsClass.each( function(i, val) {
+
+                    //Lower text for case insensitive
+                    var rowText = $(val).text().toLowerCase();
+                    var inputText = $(that).val().toLowerCase();
+                    if(inputText != '')
+                    {
+                        $('.search-query-sf').remove();
+                        tableBody.prepend('<tr class="search-query-sf"><td colspan="6"><strong>Searching for: "'
+                            + $(that).val()
+                            + '"</strong></td></tr>');
+                    }
+                    else
+                    {
+                        $('.search-query-sf').remove();
+                    }
+
+                    if( rowText.indexOf( inputText ) == -1 )
+                    {
+                        //hide rows
+                        tableRowsClass.eq(i).hide();
+
+                    }
+                    else
+                    {
+                        $('.search-sf').remove();
+                        tableRowsClass.eq(i).show();
+                    }
+                });
+                //all tr elements are hidden
+                if(tableRowsClass.children(':visible').length == 0)
+                {
+                    tableBody.append('<tr class="search-sf"><td class="text-muted" colspan="6">No entries found.</td></tr>');
                 }
             });
-            //all tr elements are hidden
-            if(tableRowsClass.children(':visible').length == 0)
-            {
-                tableBody.append('<tr class="search-sf"><td class="text-muted" colspan="6">No entries found.</td></tr>');
-            }
         });
-    });
+
+        $(document).ready(function() {
+          var activeSystemClass = $('.list-group-item.active');
+
+          //something is entered in search form
+          $('#system-search3').keyup( function() {
+             var that = this;
+              // affect all table rows on in systems table
+              var tableBody = $('.table-list-search3 tbody');
+              var tableRowsClass = $('.table-list-search3 tbody tr');
+              $('.search-sf').remove();
+              tableRowsClass.each( function(i, val) {
+
+                  //Lower text for case insensitive
+                  var rowText = $(val).text().toLowerCase();
+                  var inputText = $(that).val().toLowerCase();
+                  if(inputText != '')
+                  {
+                      $('.search-query-sf').remove();
+                      tableBody.prepend('<tr class="search-query-sf"><td colspan="6"><strong>Searching for: "'
+                          + $(that).val()
+                          + '"</strong></td></tr>');
+                  }
+                  else
+                  {
+                      $('.search-query-sf').remove();
+                  }
+
+                  if( rowText.indexOf( inputText ) == -1 )
+                  {
+                      //hide rows
+                      tableRowsClass.eq(i).hide();
+
+                  }
+                  else
+                  {
+                      $('.search-sf').remove();
+                      tableRowsClass.eq(i).show();
+                  }
+              });
+              //all tr elements are hidden
+              if(tableRowsClass.children(':visible').length == 0)
+              {
+                  tableBody.append('<tr class="search-sf"><td class="text-muted" colspan="6">No entries found.</td></tr>');
+              }
+          });
+        });
   </script>
 
+  <style>
+      .scrollit {
+          overflow:scroll;
+          height:100px;
+      }
+  </style>
 </head>
 <body>
 
@@ -64,9 +211,90 @@
   <p>{{ email }}<p>
 </div>
 
+<hr />
 
 <div class="container">
 	<div class="row">
+        <div class="col-md-4">
+            <h4> <b> Positive qualities</b> </h4>
+        </div>
+        <div class="col-md-2">
+            <form action="#" method="get">
+                <div class="input-group">
+                    <!-- USE TWITTER TYPEAHEAD JSON WITH API TO SEARCH -->
+                    <input class="form-control" id="system-search2" name="q" placeholder="Search for" required>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-3">
+            <h4> <b> Negative qualities </b> </h4>
+        </div>
+        <div class="col-md-3">
+            <form action="#" method="get">
+                <div class="input-group">
+                    <!-- USE TWITTER TYPEAHEAD JSON WITH API TO SEARCH -->
+                    <input class="form-control" id="system-searc3" name="q" placeholder="Search for" required>
+                </div>
+            </form>
+        </div>
+        <br /><br />
+    <div class="row">
+		<div class="col-md-6" style="overflow-y:scroll; height: 200pt;">
+    	 <table class="table table-list-search2 table-responsive">
+                    <thead>
+                        <tr>
+                            <th>Quality</th>
+                            <th>Votes number</th>
+                        </tr>
+                    </thead>
+                    <tbody class="scrollit">
+                        {% for merit, counter in positive_qualities.items %}
+                            <tr>
+                                <td>{{ merit }}</td>
+                                <td>{{ counter }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+		</div>
+        <div class="col-md-6" style="overflow-y:scroll; height: 200pt;">
+    	 <table class="table table-list-search3 table-responsive">
+                    <thead>
+                        <tr>
+                            <th>Quality</th>
+                            <th>Votes number</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for merit, counter in negative_qualities.items %}
+                            <tr>
+                                <td>{{ merit }}</td>
+                                <td>{{ counter }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+		</div>
+    </div>
+	</div>
+</div>
+<br />
+
+<hr />
+
+<div class="container">
+	<div class="row">
+        <div class="col-md-4">
+            <h4> <b> Meetings enrolled by user as Student</b> </h4>
+        </div>
+        <div class="col-md-2">
+            <form action="#" method="get">
+                <div class="input-group">
+                    <!-- USE TWITTER TYPEAHEAD JSON WITH API TO SEARCH -->
+                    <input class="form-control" id="system-search1" name="q" placeholder="Search for" required>
+                </div>
+            </form>
+        </div>
         <div class="col-md-3">
             <h4> <b> Enrolled courses table: </b> </h4>
         </div>
@@ -78,10 +306,31 @@
                 </div>
             </form>
         </div>
-        <div class="col-md-6">
-        </div><br /><br />
+        <br /><br />
     <div class="row">
-		<div class="col-md-6">
+		<div class="col-md-6" style="overflow-y:scroll; height: 200pt;">
+    	 <table class="table table-list-search1 table-responsive">
+                    <thead>
+                        <tr>
+                            <th>Course name</th>
+                            <th>Meeting type</th>
+                            <th>Date</th>
+                            <th>Place</th>
+                        </tr>
+                    </thead>
+                    <tbody class="scrollit">
+                        {% for meeting in meeting_enrolled %}
+                            <tr>
+                                <td>{{ meeting.course }}</td>
+                                <td>{{ meeting.meeting_type }}</td>
+                                <td>{{ meeting.date }}</td>
+                                <td>{{ meeting.place }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+		</div>
+        <div class="col-md-6" style="overflow-y:scroll; height: 200pt;">
     	 <table class="table table-list-search table-responsive">
                     <thead>
                         <tr>
@@ -101,10 +350,11 @@
                     </tbody>
                 </table>
 		</div>
-        <div class="col-md-6"></div>
     </div>
 	</div>
 </div>
+<br />
 
+<hr />
 </body>
 </html>
