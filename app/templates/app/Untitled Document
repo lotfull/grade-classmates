@@ -1,0 +1,17 @@
+<table class="table">
+            {% for grade_line in grades %}
+                <tr>
+                    {% for grade in grade_line %}
+                        {%if grade.0 == None and grade.1 != '' %}
+                            <td class="no_grade text-center"><a href="{% url 'app:meeting_vote_choice' meeting.id grade.1  %}"> {{ grade.1 }} </a> </td>
+                        {%elif grade.0 <= 5%}
+                            <td class="bad_grade text-center"> {{ grade.0 }} </td>
+                        {%elif grade.0 > 5%}
+                            <td class="good_grade text-center"> {{ grade.0 }} </td>
+                        {% else %}
+                            <th> {{ grade.0 }} </th>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
