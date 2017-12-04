@@ -51,12 +51,7 @@ def dashboard(request):
     for student_attended in students_attended:
         if student_attended.student.user == current_user:
             meeting = student_attended.meeting
-            meeting_info = {}
-            meeting_info['date'] = meeting.date
-            meeting_info['place'] = meeting.place
-            meeting_info['course'] = meeting.course
-            meeting_info['meeting_type'] = meeting.meeting_type
-            context.get('meeting_enrolled').append(meeting_info)
+            context.get('meeting_enrolled').append(meeting)
 
     grade_actions = GradeAction.objects.all().filter(graded = current_user)
     context['positive_qualities'] = {}
@@ -90,6 +85,13 @@ def meeting_results(request, meeting_id):
 
     teachers = TeacherAttends.objects.filter(meeting_id=meeting_id)  # TODO unique
     students =  StudentAttends.objects.filter(meeting_id=meeting_id)
+
+    tuples_teachers = [(participant.teacher.user.username, participant.teacher.user.id)
+                       for participant in teachers]
+    tuples_students = [(participant.student.user.username, participant.student.user.id)
+                       for participant in students]
+
+    tuples = [('', 1)] + tuples_teachers + tuples_students
     teachers_names = [teacher.teacher.user.username for teacher in teachers]
     students_names = [student.student.user.username for student in students]
     participants_names = teachers_names + students_names
@@ -98,24 +100,27 @@ def meeting_results(request, meeting_id):
     mapping_from_username_to_index = {username: index
                                      for index, username in enumerate(participants_names)}
 
-    table_of_grades = [[None] * (len(participants_names) + 1) for _ in range(len(participants_names) + 1)]
+    table_of_grades = [[None] * (len(participants_names)) for _ in range(len(participants_names) + 1)]
     for grade in grades:
         try:
             index_grading = mapping_from_username_to_index[grade.grading.username]
             index_graded = mapping_from_username_to_index[grade.graded.username]
-            table_of_grades[index_grading + 1][index_graded + 1] = grade.grade
+            table_of_grades[index_grading][index_graded + 1] = grade.grade
         except (IndexError, KeyError) as e:
             pass
             # TODO grade action from where grading or graded is not in meeting
 
+
+
     table_of_grades[0][0] = ""
     for i in range(len(participants_names)):
-        table_of_grades[0][i + 1] = participants_names[i]
-        table_of_grades[i + 1][0] = participants_names[i]
+        table_of_grades[i][0] = participants_names[i]
 
+    print(tuples)
     context = {
         'meeting': meeting,
         'grades': table_of_grades,
+        'tuples': tuples
     }
     return render(request, 'app/vote_results_for_participant.html', context)
 

@@ -31,28 +31,38 @@
 
 <body>
     <div class="container">
-        <h1>{{ meeting.meeting_type }} in {{ meeting.course }} in {{ meeting.place }} on {{ meeting.date }}</h1>
+        <h1>{{ meeting.meeting_type }} in {{ meeting.course }} in {{ meeting.place }} on {{ meeting.date }} </h1>
     </div>
-
     <div class="container">
         <table class="table">
-            {% for grade_line in grades %}
+            <thead>
                 <tr>
-                    {% for grade in grade_line %}
-                        {%if grade == None %}
-                            <td class="no_grade text-center"> {{ "–" }} </td>
-                        {%elif grade <= 5%}
-                            <td class="bad_grade text-center"> {{ grade }} </td>
-                        {%elif grade > 5%}
-                            <td class="good_grade text-center"> {{ grade }} </td>
-                        {% else %}
-                            <th> {{ grade }} </th>
-                        {% endif %}
-                    {% endfor %}
+                {% for tuple in tuples %}
+                    <th><a href="{% url 'app:meeting_vote_choice' meeting.id tuple.1 %}"> {{ tuple.0 }} </a> </th>
+                {%endfor%}
                 </tr>
-            {% endfor %}
+            </thead>
+            <tbody>
+                {% for grade_line in grades %}
+                    <tr>
+                        {% for grade in grade_line %}
+                            {%if grade == None %}
+                                <td class="no_grade text-center">  - </td>
+                            {%elif grade <= 5%}
+                                <td class="bad_grade text-center"> {{ grade}} </td>
+                            {%elif grade > 5%}
+                                <td class="good_grade text-center"> {{ grade }} </td>
+                            {% else %}
+                                <th> {{ grade }} </th>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
         </table>
     </div>
+
+
 
 </body>
 
