@@ -360,10 +360,35 @@ class DataManager(models.Manager):
                     GradeAction.create(grading_user, graded_user, overall_grade, overall_merit, meeting)
 
 
+    links = [
+        ["Dashboard", "/app/dashboard/"],
+        ["Students Login", "/accounts/login/"],
+        ["Admin Login", "/admin/login/"],
+        ["Meeting 1 all results", "/meeting/1/results/"],
+        ["Meeting 1 vote choice", "/meeting/1/vote_choice/1"],
+        ["Meeting 1 vote action", "/meeting/1/vote_action/1"],
+        ["Logout", "/accounts/logout/"]
+    ]
 
+    @staticmethod
+    def generate_links():
+        for link in DataManager.links:
+            Link.create(link[0], link[1])
 
+class Link(models.Model):
+    name = models.CharField(max_length=200)
+    ref = models.CharField(max_length=200)
 
+    def __str__(self):
+        return self.name + "-" + self.ref
 
+    @staticmethod
+    def create(name, ref):
+        link, created = Link.objects.get_or_create(
+            name=name,
+            ref=ref
+        )
+        save_if(link, created)
 
 
 
