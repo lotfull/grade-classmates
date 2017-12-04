@@ -3,10 +3,31 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.utils import timezone
 
-from .models import GradeAction, StudentAttends, StudentEnrolled
+from .models import *
 
 def main_page(request):
-    return HttpResponse("Main Page")
+    if request.user.is_authenticated():
+        is_student = Student.objects.filter(user=request.user)
+        if is_student:
+            title = "Hello, User {}!".format(is_student.first().user)
+            links_list = Link.objects.all().exclude(name="Students Login")
+        else:
+            is_teacher = Teacher.objects.filter(user=request.user)
+            if is_teacher:
+                title = "Hello, Teacher {}!".format(is_teacher.first().user)
+                links_list = Link.objects.all().exclude(name="Students Login")
+            else:
+                title = "Hello, Admin {}!".format(request.user)
+                links_list = Link.objects.all().exclude(name="Admin Login").exclude(name="Logout")
+    else:
+        print("NOT AUTHENTICATED")
+        title = "Hello, Guest!".format(request.user)
+        links_list = Link.objects.all().exclude(name="Dashboard").exclude(name="Dashboard").exclude(name="Dashboard").exclude(name="Meeting 1 all results").exclude(name="Meeting 1 vote choice").exclude(name="Meeting 1 vote action").exclude(name="Logout")
+    context = {
+        "title": title,
+        "links_list": links_list
+    }
+    return render(request, 'app/main.html', context)
 
 def index(request):
     time_now = timezone.now()
