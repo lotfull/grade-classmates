@@ -367,7 +367,8 @@ class DataManager(models.Manager):
         ["Meeting 1 all results", "/meeting/1/results/"],
         ["Meeting 1 vote choice", "/meeting/1/vote_choice/1"],
         ["Meeting 1 vote action", "/meeting/1/vote_action/1"],
-        ["Logout", "/accounts/logout/"]
+        ["Logout", "/accounts/logout/"],
+        ["Main", "/"]
     ]
 
     @staticmethod

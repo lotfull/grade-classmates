@@ -1,5 +1,8 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Login</title>
+</head>
 <head>
     <style>
         body {
@@ -445,11 +448,28 @@
         }
         }
 
+        .label {
+            padding-bottom: 30px;
+        }
+
+        .mainLblPos{
+           position:fixed;
+           right:10px;
+           top:30px;
+      }
+
+        .a_link{
+            outline:none;
+            text-decoration:none;
+            color:#ddd;
+        }
+
     </style>
 
 </head>
 
 <body>
+
     <div class="container">
     <div class="row">
 
@@ -461,7 +481,7 @@
       <div class=""></div>
       <div class="card">
         <h1 class="title">Login</h1>
-        <form  method="post", action="{% url 'login' %}">
+        <form  method="post" action="{% url 'login' %}">
             {% csrf_token %}
           <div class="input-container">
             {{ form.username }}
@@ -476,8 +496,13 @@
           <div class="button-container">
             <button><span>Go</span></button>
           </div>
-          <div class="footer"><a href="{% url 'password_reset'%}">Forgot your password?</a></div>
         </form>
+          <form>
+              <div class="button-container">
+                <button><span><a href="/" class="a_link">Main Page</a></span></button>
+              </div>
+              <div class="footer"><a href="{% url 'password_reset'%}">Forgot your password?</a></div>
+          </form>
       </div>
     </div>
     	</div>
