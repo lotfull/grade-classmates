@@ -68,6 +68,8 @@ def dashboard(request):
         merit[0] = last_count + 1
         merit[1] = round((average * last_count + plus) / merit[0], 2)
 
+    # merit [count=0 ,average=0]
+
     for grade in grade_actions:
         merit = grade.merit
         if context['positive_qualities'].get(merit.name) == None:
@@ -189,3 +191,72 @@ def meeting_vote_action(request, meeting_id, graded_id):
             )
             grade_action.save()
         return HttpResponseRedirect(reverse('app:meeting_results', args=(meeting_id,)))
+
+def users_results(request, users_type):
+    merits = Merit.objects.all()
+    merits_list = [''] + [merit.name for merit in merits]
+    teachers_users = [teacher.user for teacher in Teacher.objects.all()]
+    students_users = [student.user for student in Student.objects.all()]
+    def incr_average(merit, plus):
+        last_count = merit["count"]
+        last_average = merit["average"]
+        new_count = last_count + 1
+        merit["average"] = round((last_average * last_count + plus) / new_count, 2)
+        merit["count"] += 1
+
+    if users_type=="students":
+        students_or_teachers = [student.user for student in Student.objects.all()]
+    elif users_type=="teachers":
+        students_or_teachers = [teacher.user for teacher in Teacher.objects.all()]
+    else:
+        students_or_teachers = users_type
+
+    users_average_merits = {
+        user.username: {} for user in students_or_teachers
+    }
+
+
+    if users_type != "students" and users_type != "teachers":
+        user=User.objects.filter(username=users_type)
+        grade_actions = GradeAction.objects.filter(grading=user)
+    else:
+        grade_actions = GradeAction.objects.all()
+
+    for grade_action in grade_actions:
+        user = grade_action.graded
+        if users_type == "students":
+            if user in teachers_users:
+            # user is student
+                continue
+        elif users_type=="teachers":
+            if user in teachers_users:
+            # user is student
+                continue
+
+        grade = grade_action.grade
+        merit = grade_action.merit
+        if users_average_merits[user.username].get(merit.name) == None:
+            users_average_merits[user.username][merit.name] = {"average": grade,
+                                                               "count": 1}
+        else:
+            incr_average(users_average_merits[user.username][merit.name], grade)
+
+
+    table_of_grades = [
+        [None] * ((len(merits_list))) for _ in range(len(students_or_teachers))
+    ]
+
+    for user_average_merits in users_average_merits:
+        for user_i, user in enumerate(students_or_teachers):
+            for merit_i, merit in enumerate(merits):
+                table_of_grades[user_i][merit_i + 1] = users_average_merits[user.username][merit.name]["average"]
+
+    table_of_grades[0][0] = ""
+    for i in range(len(students_or_teachers)):
+        table_of_grades[i][0] = students_or_teachers[i]
+    context = {
+        'meeting': "Table_of_students" if users_type=="students" else "Table_of_teachers",
+        'grades': table_of_grades,
+        'tuples': merits_list
+    }
+    return render(request, 'app/users_results.html', context)

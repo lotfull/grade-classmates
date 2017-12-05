@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Vote results</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <style>
+        .no_grade {
+            background-color: #F9F9F9;
+        }
+
+        .bad_grade {
+            background-color: rgb(230, 0, 0);
+        }
+
+        .good_grade {
+            background-color: #45BF3B;
+        }
+        table, th, td {
+            font-size: 14;
+            border: 0.5px solid gray;
+        }
+
+        .logoutLblPos{
+           position:fixed;
+           left:10px;
+           top:5px;
+      }
+      .mainLblPos{
+           position:fixed;
+           left:10px;
+           top:25px;
+      }
+        .dashboardLblPos {
+            position:fixed;
+           left:10px;
+           top:45px;
+        }
+
+
+    </style>
+
+</head>
+
+<body>
+
+    <a class="logoutLblPos back" href="/accounts/logout">Log out</a>
+    <a class="mainLblPos back " href="/">Main</a>
+    <a class="dashboardLblPos back " href="/app/dashboard">Dashboard</a>
+
+    <div class="container">
+        <h1>{{ meeting }} </h1>
+    </div>
+    <div class="container">
+        <table class="table">
+            <thead>
+                <tr>
+                {% for tuple in tuples %}
+                    <th>{{ tuple }}</th>
+                {%endfor%}
+                </tr>
+            </thead>
+            <tbody>
+                {% for grade_line in grades %}
+                    <tr>
+                        {% for grade in grade_line %}
+                            {%if grade == None %}
+                                <td class="no_grade text-center">  - </td>
+                            {%elif grade <= 5%}
+                                <td class="bad_grade text-center"> {{ grade}} </td>
+                            {%elif grade > 5%}
+                                <td class="good_grade text-center"> {{ grade }} </td>
+                            {% else %}
+                                <th> {{ grade }} </th>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+
+</body>
+
+</html>
