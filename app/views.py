@@ -10,19 +10,19 @@ def main_page(request):
         is_student = Student.objects.filter(user=request.user)
         if is_student:
             title = "Hello, User {}!".format(is_student.first().user)
-            links_list = Link.objects.all().exclude(name="Students Login")
+            links_list = Link.objects.all().exclude(name="Students Login").exclude(name="Main")
         else:
             is_teacher = Teacher.objects.filter(user=request.user)
             if is_teacher:
                 title = "Hello, Teacher {}!".format(is_teacher.first().user)
-                links_list = Link.objects.all().exclude(name="Students Login")
+                links_list = Link.objects.all().exclude(name="Students Login").exclude(name="Main")
             else:
                 title = "Hello, Admin {}!".format(request.user)
-                links_list = Link.objects.all().exclude(name="Admin Login").exclude(name="Logout")
+                links_list = Link.objects.all().exclude(name="Admin Login").exclude(name="Logout").exclude(name="Main")
     else:
         print("NOT AUTHENTICATED")
         title = "Hello, Guest!".format(request.user)
-        links_list = Link.objects.all().exclude(name="Dashboard").exclude(name="Dashboard").exclude(name="Dashboard").exclude(name="Meeting 1 all results").exclude(name="Meeting 1 vote choice").exclude(name="Meeting 1 vote action").exclude(name="Logout")
+        links_list = Link.objects.all().exclude(name="Dashboard").exclude(name="Dashboard").exclude(name="Dashboard").exclude(name="Meeting 1 all results").exclude(name="Meeting 1 vote choice").exclude(name="Meeting 1 vote action").exclude(name="Logout").exclude(name="Main")
     context = {
         "title": title,
         "links_list": links_list
@@ -36,42 +36,46 @@ def index(request):
 
 def dashboard(request):
     current_user = request.user
-    context = {'courses_enrolled':[], 'first_name': current_user.first_name,
-               'last_name': current_user.last_name, 'email': current_user.email,
+    context = {'courses_enrolled':[],
+               'first_name': current_user.first_name,
+               'last_name': current_user.last_name,
+               'email': current_user.email,
                'meeting_enrolled':[]}
 
-    students_enrolled = StudentEnrolled.objects.all()
+    students_enrolled = StudentEnrolled.objects.filter(student__user=current_user)
     for student_enrolled in students_enrolled:
-        if student_enrolled.student.user == current_user:
-            course_info = {'course_name': student_enrolled.course.name, 'start_date': student_enrolled.course.start_date,
-                           'end_date': student_enrolled.course.end_date }
-            context.get('courses_enrolled').append(course_info)
+        course_info = {'course_name': student_enrolled.course.name,
+                       'start_date': student_enrolled.course.start_date,
+                       'end_date': student_enrolled.course.end_date }
+        context.get('courses_enrolled').append(course_info)
 
-    students_attended = StudentAttends.objects.all()
+    students_attended = StudentAttends.objects.filter(student__user=current_user)
     for student_attended in students_attended:
-        if student_attended.student.user == current_user:
-            meeting = student_attended.meeting
-            context.get('meeting_enrolled').append(meeting)
+        meeting = student_attended.meeting
+        context.get('meeting_enrolled').append(meeting)
+
+    meetings_list = sorted(context["meeting_enrolled"], key=lambda x: x.date)
+    context["meeting_enrolled"] = meetings_list
+    print(context["meeting_enrolled"])
 
     grade_actions = GradeAction.objects.all().filter(graded = current_user)
     context['positive_qualities'] = {}
     context['negative_qualities'] = {}
+
+    def incr_average(merit, plus):
+        last_count = merit[0]
+        average = merit[1]
+        merit[0] = last_count + 1
+        merit[1] = round((average * last_count + plus) / merit[0], 2)
+
     for grade in grade_actions:
         merit = grade.merit
-        if merit.description == '+':
-            if context['positive_qualities'].get(merit.name) == None:
-                context['positive_qualities'][merit.name] = 1
-            else:
-                context['positive_qualities'][merit.name] += 1
-        else:
-            if context['negative_qualities'].get(merit.name) == None:
-                context['negative_qualities'][merit.name] = 1
-            else:
-                context['negative_qualities'][merit.name] += 1
+        if context['positive_qualities'].get(merit.name) == None:
+            context['positive_qualities'][merit.name] = [0, 0]
+        incr_average(context['positive_qualities'][merit.name], grade.grade)
 
-    for i in context['positive_qualities'].items():
-        print(i[0], i[1])
-
+    teachers_names = [teacher.user.username for teacher in Teacher.objects.all()]
+    context["teachers_names"] = teachers_names
     return render(request, 'app/dashboard.html', context)
 
 

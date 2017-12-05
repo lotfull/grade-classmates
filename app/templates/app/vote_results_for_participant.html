@@ -24,12 +24,33 @@
             border: 0.5px solid gray;
         }
 
+        .logoutLblPos{
+           position:fixed;
+           left:10px;
+           top:5px;
+      }
+      .mainLblPos{
+           position:fixed;
+           left:10px;
+           top:25px;
+      }
+        .dashboardLblPos {
+            position:fixed;
+           left:10px;
+           top:45px;
+        }
+
 
     </style>
 
 </head>
 
 <body>
+
+    <a class="logoutLblPos back" href="/accounts/logout">Log out</a>
+    <a class="mainLblPos back " href="/">Main</a>
+    <a class="dashboardLblPos back " href="/app/dashboard">Dashboard</a>
+
     <div class="container">
         <h1>{{ meeting.meeting_type }} in {{ meeting.course }} in {{ meeting.place }} on {{ meeting.date }} </h1>
     </div>
