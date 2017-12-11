@@ -1,4 +1,6 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
     <title>Vote results</title>
     <meta charset="utf-8">
@@ -18,6 +20,10 @@
 
         .good_grade {
             background-color: #45BF3B;
+        }
+
+        .small_sample {
+            background-color: #e3e3e3
         }
         table, th, td {
             font-size: 14;
@@ -52,14 +58,17 @@
     <a class="dashboardLblPos back " href="/app/dashboard">Dashboard</a>
 
     <div class="container">
-        <h1>{{ meeting.meeting_type }} in {{ meeting.course }} in {{ meeting.place }} on {{ meeting.date }} </h1>
+        <h1>{{ meeting }} </h1>
     </div>
+
+
+    <br />
     <div class="container">
         <table class="table">
             <thead>
                 <tr>
                 {% for tuple in tuples %}
-                    <th><a href="{% url 'app:meeting_vote_choice' meeting.id tuple.1 %}"> {{ tuple.0 }} </a> </th>
+                    <th>{{ tuple }}</th>
                 {%endfor%}
                 </tr>
             </thead>
@@ -69,10 +78,12 @@
                         {% for grade in grade_line %}
                             {%if grade == None %}
                                 <td class="no_grade text-center">  - </td>
-                            {%elif grade <= 5%}
-                                <td class="bad_grade text-center"> {{ grade}} </td>
-                            {%elif grade > 5%}
-                                <td class="good_grade text-center"> {{ grade }} </td>
+                            {% elif grade.1 <= 20 %}
+                                <th class="small_sample text-center"> {{ grade }} </th>
+                            {%elif grade.0 <= 5%}
+                                <td class="bad_grade text-center"> {{ grade.0 }} from {{ grade.1 }} </td>
+                            {%elif grade.0 > 5%}
+                                <td class="good_grade text-center"> {{ grade.0 }} from {{ grade.1 }} </td>
                             {% else %}
                                 <th> {{ grade }} </th>
                             {% endif %}
