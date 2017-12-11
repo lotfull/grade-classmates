@@ -211,6 +211,9 @@ def users_results(request, users_type):
     else:
         students_or_teachers = users_type
 
+    if request.POST.get('filter_names') != None:
+        students_or_teachers = request.POST['filter_names'].split('_')
+
     users_average_merits = {
         user.username: {} for user in students_or_teachers
     }
@@ -229,7 +232,7 @@ def users_results(request, users_type):
             # user is student
                 continue
         elif users_type=="teachers":
-            if user in teachers_users:
+            if user in students_users:
             # user is student
                 continue
 
@@ -249,7 +252,10 @@ def users_results(request, users_type):
     for user_average_merits in users_average_merits:
         for user_i, user in enumerate(students_or_teachers):
             for merit_i, merit in enumerate(merits):
-                table_of_grades[user_i][merit_i + 1] = users_average_merits[user.username][merit.name]["average"]
+                table_of_grades[user_i][merit_i + 1] = (
+                    users_average_merits[user.username][merit.name]["average"],
+                    users_average_merits[user.username][merit.name]["count"]
+                )
 
     table_of_grades[0][0] = ""
     for i in range(len(students_or_teachers)):
@@ -257,6 +263,7 @@ def users_results(request, users_type):
     context = {
         'meeting': "Table_of_students" if users_type=="students" else "Table_of_teachers",
         'grades': table_of_grades,
-        'tuples': merits_list
+        'tuples': merits_list,
+        'user_type':users_type
     }
     return render(request, 'app/users_results.html', context)
