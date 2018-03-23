@@ -1,8 +1,10 @@
-from django.db import models
-from django.contrib.auth.models import User
-from datetime import datetime, timedelta
-from dateutil.relativedelta import *
 import random
+from datetime import datetime
+
+from dateutil.relativedelta import *
+from django.contrib.auth.models import User
+from django.db import models
+
 
 def save_if(model, created):
     if created:
@@ -11,7 +13,9 @@ def save_if(model, created):
     else:
         print("existing", model)
 
+
 models.Model.save_if = save_if
+
 
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -122,8 +126,8 @@ class TeacherTeaches(models.Model):
     @staticmethod
     def create(course, teacher):
         teacherTeaches, created = TeacherTeaches.objects.get_or_create(
-            course = course,
-            teacher = teacher
+            course=course,
+            teacher=teacher
         )
         save_if(teacherTeaches, created)
 
@@ -138,8 +142,8 @@ class StudentEnrolled(models.Model):
     @staticmethod
     def create(course, student):
         studentEnrolled, created = StudentEnrolled.objects.get_or_create(
-            course = course,
-            student = student
+            course=course,
+            student=student
         )
         save_if(studentEnrolled, created)
 
@@ -154,9 +158,9 @@ class TeacherAttends(models.Model):
     @staticmethod
     def create(meeting, teacher):
         teacherAttends, created = TeacherAttends.objects.get_or_create(
-                meeting = meeting,
-                teacher = teacher
-            )
+            meeting=meeting,
+            teacher=teacher
+        )
         save_if(teacherAttends, created)
 
 
@@ -170,9 +174,9 @@ class StudentAttends(models.Model):
     @staticmethod
     def create(meeting, student):
         studentAttends, created = StudentAttends.objects.get_or_create(
-                meeting = meeting,
-                student = student
-            )
+            meeting=meeting,
+            student=student
+        )
         save_if(studentAttends, created)
 
 
@@ -198,17 +202,43 @@ class GradeAction(models.Model):
         )
         save_if(gradeAction, created)
 
+
 class DataManager(models.Manager):
+    users_names = ["Fadeev", "Terentyev", "Kozlov", "Kuzmin", "Fedorov", "Shcherbakov", "Dmitriev", "Yudin",
+                   "Belousova", "Gerasimov", "Seleznyov", "Prokhorov", "Bobrov", "Birds", "Crane", "Zuyev", "Karpov",
+                   "Vladimir", "Kolobov", "Nesterov", "Kondratyev", "Petrov", "Sparrows", "Maksimov", "Isayev",
+                   "Frolov", "Shchukin", "Alexander", "Tretyakov", "Vorontsov", "Kosheleva", "Efimova", "Lobanov",
+                   "Sorokin", "Belousova", "Boer", "Seleznyov", "Sukhanov", "Morozov", "Doronin", "Vorob", "Makarov",
+                   "Nesterov", "Sokolov", "Beetles", "Nekrasov", "Gavrilov", "Wings", "Simonov", "Myasnikova",
+                   "Cossacks", "Sparrows", "Kovalev", "Ermakova", "Larionov", "Vorob", "Sokolov", "Mironov", "Davidoff",
+                   "Loginova", "Zhdanov", "Bobylev", "Subbotina", "Dorofeev", "Popova", "Voronova", "Index", "Guryev",
+                   "Karpov", "Zhdanov", "Orlov", "Kulikova", "Sharova", "Ignatova", "Myasnikov", "Boar", "Panov",
+                   "Mammontov", "Lotfullin", "Bykov", "Panova", "Belousova", "Gushchin", "Koshelev", "Krasilnikov",
+                   "Fomin", "Danilov", "Savel", "Pancakes", "Vlasov", "Mikhaylov", "Smith", "Pavlov", "Ponomareva",
+                   "Nesterov", "Mikheev", "Frolov", "Konovalov", "Kirillov", "Kolesnikov"]
 
-    users_names = ["Fadeev", "Terentyev", "Kozlov", "Kuzmin", "Fedorov", "Shcherbakov", "Dmitriev", "Yudin", "Belousova", "Gerasimov", "Seleznyov", "Prokhorov", "Bobrov", "Birds", "Crane", "Zuyev", "Karpov", "Vladimir", "Kolobov", "Nesterov", "Kondratyev", "Petrov", "Sparrows", "Maksimov", "Isayev", "Frolov", "Shchukin", "Alexander", "Tretyakov", "Vorontsov", "Kosheleva", "Efimova", "Lobanov", "Sorokin", "Belousova", "Boer", "Seleznyov", "Sukhanov", "Morozov", "Doronin", "Vorob", "Makarov", "Nesterov", "Sokolov", "Beetles", "Nekrasov", "Gavrilov", "Wings", "Simonov", "Myasnikova", "Cossacks", "Sparrows", "Kovalev", "Ermakova", "Larionov", "Vorob", "Sokolov", "Mironov", "Davidoff", "Loginova", "Zhdanov", "Bobylev", "Subbotina", "Dorofeev", "Popova", "Voronova", "Index", "Guryev", "Karpov", "Zhdanov", "Orlov", "Kulikova", "Sharova", "Ignatova", "Myasnikov", "Boar", "Panov", "Mammontov", "Lotfullin", "Bykov", "Panova", "Belousova", "Gushchin", "Koshelev", "Krasilnikov", "Fomin", "Danilov", "Savel", "Pancakes", "Vlasov", "Mikhaylov", "Smith", "Pavlov", "Ponomareva", "Nesterov", "Mikheev", "Frolov", "Konovalov", "Kirillov", "Kolesnikov"]
-
-    courses_names = ["Algebra", "Algorithms and data structures", "Algorithms and data structures", "Analysis of markets and competitiveness", "English", "computer Architecture and operating systems", "Safety", "Introduction to object-oriented programming", "Introductory research seminar", "Discrete mathematics", "Discrete mathematics ", "Discrete optimization", "Differential equations, History, Linear algebra and geometry", "macroeconomics", "Mathematical analysis", "Machine learning 1", "Machine learning on big data", "Interdisciplinary course work", "Microeconomics", "research seminar in Distributed systems", "Scientific seminar", "Independent English exam ", "Continuous optimization, Parallel and distributed computing", "Software project", "Project Software project 1", "Psychology in it", "Theory of databases", "Theory of probability and mathematical statistics", "Teaching", "Teaching practice", "Physical culture"]
+    courses_names = ["Algebra", "Algorithms and data structures", "Algorithms and data structures",
+                     "Analysis of markets and competitiveness", "English",
+                     "computer Architecture and operating systems", "Safety",
+                     "Introduction to object-oriented programming", "Introductory research seminar",
+                     "Discrete mathematics", "Discrete mathematics ", "Discrete optimization",
+                     "Differential equations, History, Linear algebra and geometry", "macroeconomics",
+                     "Mathematical analysis", "Machine learning 1", "Machine learning on big data",
+                     "Interdisciplinary course work", "Microeconomics", "research seminar in Distributed systems",
+                     "Scientific seminar", "Independent English exam ",
+                     "Continuous optimization, Parallel and distributed computing", "Software project",
+                     "Project Software project 1", "Psychology in it", "Theory of databases",
+                     "Theory of probability and mathematical statistics", "Teaching", "Teaching practice",
+                     "Physical culture"]
 
     meeting_types_descriptions = ["lecture", "seminar"]
 
-    merit_names_descriptions = [("communication skills", "+"), ("ability to admit a mistake", "+"), ("intellect", "+"), ("open-minded", "+"), ("responsibility", "+"), ("overall", "+")]
+    merit_names_descriptions = [("communication skills", "+"), ("ability to admit a mistake", "+"), ("intellect", "+"),
+                                ("open-minded", "+"), ("responsibility", "+"), ("overall", "+")]
 
-    places = ["kochna, 610", "kochna, 229", "kochna, 330", "kochna, 203", "kochna, 408", "kochna, 306", "kochna, 505", "kochna, 432", "kochna, 521", "kochna, 200", "kochna, 223", "kochna, 607", "kochna, 319", "kochna, 211", "kochna, 221", "kochna, 404", "kochna, 413", "kochna, 317", "kochna, 234", "kochna, 504"]
+    places = ["kochna, 610", "kochna, 229", "kochna, 330", "kochna, 203", "kochna, 408", "kochna, 306", "kochna, 505",
+              "kochna, 432", "kochna, 521", "kochna, 200", "kochna, 223", "kochna, 607", "kochna, 319", "kochna, 211",
+              "kochna, 221", "kochna, 404", "kochna, 413", "kochna, 317", "kochna, 234", "kochna, 504"]
 
     @staticmethod
     def generate_test_data():
@@ -228,7 +258,7 @@ class DataManager(models.Manager):
         few_users = DataManager.users_names[:num_of_users]
         for i, name in enumerate(few_users):
             user, created = User.objects.get_or_create(
-                username=name, email=name+'@edu.hse.ru')
+                username=name, email=name + '@edu.hse.ru')
             if created:
                 user.set_password(name)
                 user.save()
@@ -284,7 +314,7 @@ class DataManager(models.Manager):
         courses = Course.objects.all()
         for course in courses:
             students_per_course = min(30, len(students))
-            num_students_per_course = random.randint(students_per_course/2, students_per_course)
+            num_students_per_course = random.randint(students_per_course / 2, students_per_course)
             few_students = random.sample(students, num_students_per_course)
             teacher = random.choice(teachers)
             for student in few_students:
@@ -302,7 +332,8 @@ class DataManager(models.Manager):
             Merit.create(name, description)
 
     @staticmethod
-    def generate_meetings(meetings_per_week=1, places=places, courses=Course.objects.all(), meeting_types=MeetingType.objects.all(), weeks_number=54):
+    def generate_meetings(meetings_per_week=1, places=places, courses=Course.objects.all(),
+                          meeting_types=MeetingType.objects.all(), weeks_number=54):
         for course in courses:
             print(course)
             meeting_date = course.start_date + relativedelta(day=random.randint(1, 4))
@@ -311,7 +342,7 @@ class DataManager(models.Manager):
             meeting_type = random.choice(meeting_types)
             print(meeting_type)
             number_of_weeks = min(((course.end_date - meeting_date).days / 7), weeks_number)
-            number_of_meetings = meetings_per_week*number_of_weeks
+            number_of_meetings = meetings_per_week * number_of_weeks
             print(number_of_meetings)
             for index in range(number_of_meetings):
                 meeting_date += relativedelta(days=7)
@@ -333,16 +364,16 @@ class DataManager(models.Manager):
     def generate_grade_actions(meetings=Meeting.objects.all(),
                                courses=Course.objects.all(),
                                merits=Merit.objects.all(),
-                               grading_proportion=1./3):
+                               grading_proportion=1. / 3):
 
         merits_without_overall = list(filter((lambda x: x.name != "overall"), merits))
-        overall_merit = list(filter((lambda x: x.name=="overall"), merits))[0]
+        overall_merit = list(filter((lambda x: x.name == "overall"), merits))[0]
         for meeting in meetings:
             studentsAttends = StudentAttends.objects.filter(meeting=meeting)
             teachersAttends = TeacherAttends.objects.filter(meeting=meeting)
             users = list(map((lambda x: x.student.user), studentsAttends))
             users += list(map((lambda x: x.teacher.user), teachersAttends))
-            sample_size = int(len(users)*grading_proportion)
+            sample_size = int(len(users) * grading_proportion)
             grading_users = random.sample(users, sample_size)
             for grading_user in grading_users:
                 graded_users = random.sample(users, sample_size)
@@ -359,21 +390,24 @@ class DataManager(models.Manager):
                     overall_grade /= merits_number
                     GradeAction.create(grading_user, graded_user, overall_grade, overall_merit, meeting)
 
-
     links = [
         ["Dashboard", "/app/dashboard/"],
         ["Students Login", "/accounts/login/"],
         ["Admin Login", "/admin/login/"],
+        ["Students Compare", "/app/users_results/students/"],
+        ["Teachers Compare", "/app/users_results/teachers/"],
         ["Meeting 1 all results", "/meeting/1/results/"],
         ["Meeting 1 vote choice", "/meeting/1/vote_choice/1"],
         ["Meeting 1 vote action", "/meeting/1/vote_action/1"],
-        ["Logout", "/accounts/logout/"]
+        ["Logout", "/accounts/logout/"],
+        ["Main", "/"]
     ]
 
     @staticmethod
     def generate_links():
         for link in DataManager.links:
             Link.create(link[0], link[1])
+
 
 class Link(models.Model):
     name = models.CharField(max_length=200)
@@ -389,17 +423,3 @@ class Link(models.Model):
             ref=ref
         )
         save_if(link, created)
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -16,9 +16,10 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 
+app_name='app'
 urlpatterns = [
-    url(r'^', include('app.urls', namespace="app")),
-    url(r'^app/', include('app.urls', namespace='app')),
+    url(r'^', include(('app.urls', ''), namespace="app")),
+    url(r'^app/', include(('app.urls', 'app'), namespace='app')),
     url(r'^accounts/', include('django.contrib.auth.urls')),
     url(r'^admin/', admin.site.urls),
 ]
