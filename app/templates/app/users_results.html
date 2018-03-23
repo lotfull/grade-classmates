@@ -34,16 +34,26 @@
            position:fixed;
            left:10px;
            top:5px;
-      }
-      .mainLblPos{
-           position:fixed;
-           left:10px;
-           top:25px;
-      }
+        }
+        .mainLblPos{
+             position:fixed;
+             left:10px;
+             top:25px;
+        }
         .dashboardLblPos {
             position:fixed;
            left:10px;
            top:45px;
+        }
+        .studentsLblPos {
+            position:fixed;
+           left:10px;
+           top:65px;
+        }
+        .teachersLblPos {
+            position:fixed;
+           left:10px;
+           top:85px;
         }
 
 
@@ -56,6 +66,8 @@
     <a class="logoutLblPos back" href="/accounts/logout">Log out</a>
     <a class="mainLblPos back " href="/">Main</a>
     <a class="dashboardLblPos back " href="/app/dashboard">Dashboard</a>
+    <a class="studentsLblPos back " href="/app/users_results/students">Students Compare(slow)</a>
+    <a class="teachersLblPos back " href="/app/users_results/teachers">Teachers Compare(fast)</a>
 
     <div class="container">
         <h1>{{ meeting }} </h1>

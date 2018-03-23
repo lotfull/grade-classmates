@@ -1,12 +1,11 @@
-from collections import Counter
 from django.shortcuts import render
-from django.http import HttpResponse
 from django.utils import timezone
 
 from .models import *
 
+
 def main_page(request):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         is_student = Student.objects.filter(user=request.user)
         if is_student:
             title = "Hello, User {}!".format(is_student.first().user)
@@ -22,31 +21,36 @@ def main_page(request):
     else:
         print("NOT AUTHENTICATED")
         title = "Hello, Guest!".format(request.user)
-        links_list = Link.objects.all().exclude(name="Dashboard").exclude(name="Dashboard").exclude(name="Dashboard").exclude(name="Meeting 1 all results").exclude(name="Meeting 1 vote choice").exclude(name="Meeting 1 vote action").exclude(name="Logout").exclude(name="Main")
+        links_list = Link.objects.all().exclude(
+            name="Dashboard").exclude(name="Meeting 1 all results").exclude(name="Meeting 1 vote choice").exclude(
+            name="Meeting 1 vote action").exclude(name="Logout").exclude(name="Main").exclude(
+            name="Students Compare").exclude(name="Teachers Compare")
     context = {
         "title": title,
         "links_list": links_list
     }
     return render(request, 'app/main.html', context)
 
+
 def index(request):
     time_now = timezone.now()
     context = {'time_now': time_now}
     return render(request, 'app/index.html', context)
 
+
 def dashboard(request):
     current_user = request.user
-    context = {'courses_enrolled':[],
+    context = {'courses_enrolled': [],
                'first_name': current_user.first_name,
                'last_name': current_user.last_name,
                'email': current_user.email,
-               'meeting_enrolled':[]}
+               'meeting_enrolled': []}
 
     students_enrolled = StudentEnrolled.objects.filter(student__user=current_user)
     for student_enrolled in students_enrolled:
         course_info = {'course_name': student_enrolled.course.name,
                        'start_date': student_enrolled.course.start_date,
-                       'end_date': student_enrolled.course.end_date }
+                       'end_date': student_enrolled.course.end_date}
         context.get('courses_enrolled').append(course_info)
 
     students_attended = StudentAttends.objects.filter(student__user=current_user)
@@ -58,7 +62,7 @@ def dashboard(request):
     context["meeting_enrolled"] = meetings_list
     print(context["meeting_enrolled"])
 
-    grade_actions = GradeAction.objects.all().filter(graded = current_user)
+    grade_actions = GradeAction.objects.all().filter(graded=current_user)
     context['positive_qualities'] = {}
     context['negative_qualities'] = {}
 
@@ -90,7 +94,7 @@ def meeting_results(request, meeting_id):
     meeting = get_object_or_404(Meeting, pk=meeting_id)
 
     teachers = TeacherAttends.objects.filter(meeting_id=meeting_id)  # TODO unique
-    students =  StudentAttends.objects.filter(meeting_id=meeting_id)
+    students = StudentAttends.objects.filter(meeting_id=meeting_id)
 
     tuples_teachers = [(participant.teacher.user.username, participant.teacher.user.id)
                        for participant in teachers]
@@ -104,7 +108,7 @@ def meeting_results(request, meeting_id):
 
     grades = GradeAction.objects.filter(meeting_id=meeting_id)
     mapping_from_username_to_index = {username: index
-                                     for index, username in enumerate(participants_names)}
+                                      for index, username in enumerate(participants_names)}
 
     table_of_grades = [[None] * (len(participants_names)) for _ in range(len(participants_names) + 1)]
     for grade in grades:
@@ -115,8 +119,6 @@ def meeting_results(request, meeting_id):
         except (IndexError, KeyError) as e:
             pass
             # TODO grade action from where grading or graded is not in meeting
-
-
 
     table_of_grades[0][0] = ""
     for i in range(len(participants_names)):
@@ -150,8 +152,9 @@ def meeting_vote_choice(request, meeting_id, graded_id):
     return render(request, 'app/voting.html', context)  # TODO Nikita
 
 
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.urls import reverse
+
 
 def meeting_vote_action(request, meeting_id, graded_id):
     current_user = request.user
@@ -192,11 +195,13 @@ def meeting_vote_action(request, meeting_id, graded_id):
             grade_action.save()
         return HttpResponseRedirect(reverse('app:meeting_results', args=(meeting_id,)))
 
+
 def users_results(request, users_type):
     merits = Merit.objects.all()
     merits_list = [''] + [merit.name for merit in merits]
     teachers_users = [teacher.user for teacher in Teacher.objects.all()]
     students_users = [student.user for student in Student.objects.all()]
+
     def incr_average(merit, plus):
         last_count = merit["count"]
         last_average = merit["average"]
@@ -204,9 +209,9 @@ def users_results(request, users_type):
         merit["average"] = round((last_average * last_count + plus) / new_count, 2)
         merit["count"] += 1
 
-    if users_type=="students":
+    if users_type == "students":
         students_or_teachers = [student.user for student in Student.objects.all()]
-    elif users_type=="teachers":
+    elif users_type == "teachers":
         students_or_teachers = [teacher.user for teacher in Teacher.objects.all()]
     else:
         students_or_teachers = users_type
@@ -218,9 +223,8 @@ def users_results(request, users_type):
         user.username: {} for user in students_or_teachers
     }
 
-
     if users_type != "students" and users_type != "teachers":
-        user=User.objects.filter(username=users_type)
+        user = User.objects.filter(username=users_type)
         grade_actions = GradeAction.objects.filter(grading=user)
     else:
         grade_actions = GradeAction.objects.all()
@@ -229,11 +233,11 @@ def users_results(request, users_type):
         user = grade_action.graded
         if users_type == "students":
             if user in teachers_users:
-            # user is student
+                # user is student
                 continue
-        elif users_type=="teachers":
+        elif users_type == "teachers":
             if user in students_users:
-            # user is student
+                # user is student
                 continue
 
         grade = grade_action.grade
@@ -243,7 +247,6 @@ def users_results(request, users_type):
                                                                "count": 1}
         else:
             incr_average(users_average_merits[user.username][merit.name], grade)
-
 
     table_of_grades = [
         [None] * ((len(merits_list))) for _ in range(len(students_or_teachers))
@@ -261,9 +264,9 @@ def users_results(request, users_type):
     for i in range(len(students_or_teachers)):
         table_of_grades[i][0] = students_or_teachers[i]
     context = {
-        'meeting': "Table_of_students" if users_type=="students" else "Table_of_teachers",
+        'meeting': "Table_of_students" if users_type == "students" else "Table_of_teachers",
         'grades': table_of_grades,
         'tuples': merits_list,
-        'user_type':users_type
+        'user_type': users_type
     }
     return render(request, 'app/users_results.html', context)

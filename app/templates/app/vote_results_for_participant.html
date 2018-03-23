@@ -39,7 +39,16 @@
            left:10px;
            top:45px;
         }
-
+        .studentsLblPos {
+            position:fixed;
+           left:10px;
+           top:65px;
+        }
+        .teachersLblPos {
+            position:fixed;
+           left:10px;
+           top:85px;
+        }
 
     </style>
 
@@ -50,6 +59,9 @@
     <a class="logoutLblPos back" href="/accounts/logout">Log out</a>
     <a class="mainLblPos back " href="/">Main</a>
     <a class="dashboardLblPos back " href="/app/dashboard">Dashboard</a>
+    <a class="studentsLblPos back " href="/app/users_results/students">Students Compare(slow)</a>
+    <a class="teachersLblPos back " href="/app/users_results/teachers">Teachers Compare(fast)</a>
+
 
     <div class="container">
         <h1>{{ meeting.meeting_type }} in {{ meeting.course }} in {{ meeting.place }} on {{ meeting.date }} </h1>
