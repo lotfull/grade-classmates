@@ -37,4 +37,4 @@ A web application that allows students to rate a teacher or friend after lecture
 
 ![alt text](https://raw.githubusercontent.com/lotfull/grade-classmates/master/pictures/form-for-grading-participant.png)
 
-![alt text](https://raw.githubusercontent.com/lotfull/grade-classmates/master/pictures/meeting-grade-results-p2p.png)
+![alt text](https://raw.githubusercontent.com/Lotfull/grade-classmates/master/pictures/meeting-grade-results-p2p.png)
